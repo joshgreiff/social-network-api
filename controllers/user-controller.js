@@ -21,6 +21,11 @@ const userController = {
     // get user by id (include thought and friend data)
     getUserById({ params }, res){
         User.findOne({ _id: params.id })
+        .populate({
+            path: 'thoughts',
+            select: '-__v'
+        })
+        .select('-__v')
         .then(dbUserData => {
             // if no user is found, send a 404
             if(!dbUserData){
@@ -45,7 +50,7 @@ const userController = {
         User.findOneAndUpdate({ _id: params.id }, body, { new: true })
         .then(dbUserData => {
             if(!dbUserData){
-                res.status(404).json({ message: 'No pizza found with this id!' })
+                res.status(404).json({ message: 'No user found with this id!' })
                 return
             }
             res.json(dbUserData)
@@ -57,7 +62,7 @@ const userController = {
         User.findOneAndDelete({ _id: params.id })
         .then(dbUserData => {
             if(!dbUserData){
-                res.status(404).json({ message: 'No pizza found with this id!' })
+                res.status(404).json({ message: 'No user found with this id!' })
                 return
             }
             res.json(dbUserData)
